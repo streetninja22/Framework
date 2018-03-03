@@ -123,6 +123,10 @@ namespace inpt
 		}
 
 		void updateInput();
+		
+		InputEvent* mouseInput(SDL_Event &inputEvent);
+		
+		InputEvent* keyboardInput(SDL_Event &inputEvent);
 
 	};
 

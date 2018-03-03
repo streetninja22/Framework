@@ -5,96 +5,81 @@
 
 namespace inpt
 {
+	
+	
+	InputEvent* InputSystem::mouseInput(SDL_Event& inputEvent)
+	{
+		MouseEvent* outputEvent = new MouseEvent(inputEvent.button.x, inputEvent.button.y, MouseEventType::LEFTMOUSEDOWN);
+		switch (inputEvent.type)
+		{
+			case (SDL_MOUSEBUTTONDOWN):
+			{
+				//don't need case for leftmousedown, it is default
+				
+				if (inputEvent.button.button == SDL_BUTTON_RIGHT)
+					outputEvent->setType(MouseEventType::RIGHTMOUSEDOWN);
+				else if (inputEvent.button.button == SDL_BUTTON_MIDDLE)
+					outputEvent->setType(MouseEventType::MIDDLEMOUSEDOWN);
+			}
+				
+			case (SDL_MOUSEBUTTONUP):
+			{
+				if (inputEvent.button.button == SDL_BUTTON_LEFT)
+					outputEvent->setType(MouseEventType::LEFTMOUSEUP);
+				else if (inputEvent.button.button == SDL_BUTTON_RIGHT)
+					outputEvent->setType(MouseEventType::RIGHTMOUSEUP);
+				else if (inputEvent.button.button == SDL_BUTTON_MIDDLE)
+					outputEvent->setType(MouseEventType::MIDDLEMOUSEUP);
+			
+			}
+				
+			case (SDL_MOUSEMOTION):
+			{
+				outputEvent->setType(MouseEventType::MOUSEMOTION);
+			}
+		}
+		
+		return outputEvent;
+	}
+	
+	
+	InputEvent* InputSystem::keyboardInput(SDL_Event& inputEvent)
+	{
+		KeyCode code = scancodeToKeycode(inputEvent.key.keysym.scancode);
+		KeyEventType type;
+		
+		if (inputEvent.type == SDL_KEYDOWN)
+			type = KeyEventType::KEYDOWN;
+		else
+			type = KeyEventType::KEYUP;
+		
+		return new KeyboardEvent(type, code);
+	}
 
 	void InputSystem::updateInput()
 	{
-		//TODO break this function down
 		SDL_Event inputEvent;
 
 		while (SDL_PollEvent(&inputEvent))
 		{
 			switch (inputEvent.type)
 			{
-				//To avoid reusing code, we're going to initialize the output event first then set the type values within the case statements and then add it to the event queue outside of the switch
+			
+			case (SDL_MOUSEMOTION):
+			case (SDL_MOUSEBUTTONUP):
 			case (SDL_MOUSEBUTTONDOWN):
 			{
-				//MOUSEBUTTONDOWN start
-				MouseEvent* outputEvent{ new MouseEvent(inputEvent.button.x, inputEvent.button.y, MouseEventType::LEFTMOUSEDOWN) };
-
-				switch (inputEvent.button.button)
-				{
-				case (SDL_BUTTON_RIGHT):
-					outputEvent->setType(MouseEventType::RIGHTMOUSEDOWN);
-					break;
-
-				case (SDL_BUTTON_MIDDLE):
-					outputEvent->setType(MouseEventType::MIDDLEMOUSEDOWN);
-					break;
-				case (SDL_BUTTON_LEFT):
-					outputEvent->setType(MouseEventType::LEFTMOUSEDOWN);
-					break;
-				}
-
-				addEvent(outputEvent);
-				break;
+				InputEvent* output = mouseInput(inputEvent);
+				addEvent(output);
 			}
-
-			//MOUSEBUTTONDOWN end
-
-			case (SDL_MOUSEBUTTONUP):
-			{
-				MouseEvent* outputEvent{ new MouseEvent(inputEvent.button.x, inputEvent.button.y, MouseEventType::LEFTMOUSEUP) };
-
-				switch (inputEvent.button.button)
-				{
-				case (SDL_BUTTON_RIGHT):
-					outputEvent->setType(MouseEventType::RIGHTMOUSEUP);
-					break;
-
-				case (SDL_BUTTON_MIDDLE):
-					outputEvent->setType(MouseEventType::MIDDLEMOUSEUP);
-					break;
-				case (SDL_BUTTON_LEFT):
-					outputEvent->setType(MouseEventType::LEFTMOUSEUP);
-					break;
-				}
-				addEvent(outputEvent);
-				break;
-				//MOUSEBUTTONUP end
-			}
-
-			case (SDL_MOUSEMOTION):
-			{
-				MouseEvent* outputEvent{ new MouseEvent(inputEvent.button.x, inputEvent.button.y, MouseEventType::MOUSEMOTION) };
-				addEvent(outputEvent);
-				break;
-				//MOUSEMOTION end
-			}
-
-			//TODO add any other types of input here before keyboard events
-
 
 			case (SDL_KEYDOWN):
-			{
-				KeyCode code = scancodeToKeycode(inputEvent.key.keysym.scancode);
-				KeyboardEvent* outputEvent{ new KeyboardEvent(KeyEventType::KEYDOWN, code) };
-
-				addEvent(outputEvent);
-				break;
-				//KEYDOWN end
-			}
-
 			case (SDL_KEYUP):
 			{
-				KeyCode code = scancodeToKeycode(inputEvent.key.keysym.scancode);
-				KeyboardEvent* outputEvent{ new KeyboardEvent(KeyEventType::KEYUP, code) };
-
-				addEvent(outputEvent);
-				break;
-				//KEYUP end
+				InputEvent* output = keyboardInput(inputEvent);
+				addEvent(output);
 			}
-
-			//TODO finish updateInput function
+					
 			}
 		}
 	}
