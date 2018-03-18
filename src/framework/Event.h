@@ -13,6 +13,20 @@ namespace evnt
 		INPUT,
 	};
 
+
+	class EventReturnType
+	{
+		EventType m_type;
+
+	public:
+		EventReturnType(EventType type) : m_type(type)
+		{
+		}
+
+		EventType getType() { return m_type; }
+
+	};
+
 	class Event
 	{
 
@@ -32,12 +46,23 @@ namespace evnt
 		virtual EventType getEventType() { return m_type; }
 	};
     
-    typedef std::function<void(Event*)> EventListener;
+
+
+
+
+
+    typedef std::function<EventReturnType*(Event*)> EventListener;
 
 	class EventBus
 	{
+		//the current events to be called upon update
 		std::queue<Event*> m_eventQueue;
-        std::vector<EventListener> m_eventListeners;
+
+		//the evetn listener functions to be called by this event bus
+		std::vector<EventListener> m_eventListeners;
+
+		//the list of EventReturnType values to be deleted upon garbage collection
+		std::vector<EventReturnType*> m_returnGarbageList;
 
 	public:
 		EventBus() {}
@@ -45,7 +70,7 @@ namespace evnt
 		/* adds a listener function to the event bus
 		* param listener The listener to add
 		*/
-		void addListener(std::function<void(Event*)> listener)
+		void addListener(EventListener listener)
 		{
 			m_eventListeners.push_back(listener);
 		}
@@ -58,6 +83,25 @@ namespace evnt
 			m_eventQueue.push(event);
 		}
 
+		/* Adds an EventReturnType value to the garbage collection list to be deleted next update
+		* param value The EventReturnType to be garbage collected
+		*/
+		void addToGarbageList(EventReturnType* value)
+		{
+			m_returnGarbageList.push_back(value);
+		}
+
+		/* Does garbage collection on EventReturnType values which have passed through the bus
+		*/
+		void deleteOldReturnValues()
+		{
+			while (!m_returnGarbageList.empty())
+			{
+				delete m_returnGarbageList.back();
+				m_returnGarbageList.pop_back();
+			}
+		}
+
 		/* call the event listeners with the next event in queue
 		*/
 		void callListeners()
@@ -65,10 +109,44 @@ namespace evnt
 			while (!m_eventQueue.empty())
 			{
 				for (auto& index : m_eventListeners)
-					(index)(m_eventQueue.front());
-				//delete m_eventQueue.front(); //this is causing errors, might as well have a dangling pointer for now while testing
+				{
+					EventReturnType* returned = (index)(m_eventQueue.front());
+
+					if (returned != nullptr)
+					{
+						addToGarbageList(returned);
+					}
+				}
+				delete m_eventQueue.front(); //this is causing errors, might as well have a dangling pointer for now while testing
 				m_eventQueue.pop();
 			}
+		}
+
+		/* Call all event listeners with the given event. Returns the return value of the first listener to give a non-null value
+		* param event The event to be used as the argument of listener functions
+		*/
+		EventReturnType* fireEventNow(Event* event)
+		{
+			EventReturnType* returnValue = nullptr;
+
+			for (EventListener index : m_eventListeners)
+			{
+				EventReturnType* returned = (index)(event);
+
+				if (!(returned == nullptr))
+				{
+					if (returnValue == nullptr)
+					{
+						returnValue = returned;
+
+						addToGarbageList(returned);
+					}
+					else
+						delete returned;
+				}
+			}
+
+			return returnValue;
 		}
 
 		void clearEventQueue()
@@ -80,12 +158,24 @@ namespace evnt
 			}
 		}
 
+
+		void update()
+		{
+			callListeners();
+			deleteOldReturnValues();
+		}
+
 		~EventBus()
 		{
 			clearEventQueue();
 		}
 
 	};
+
+
+
+
+
 
 	class EventNode
 	{
@@ -95,18 +185,18 @@ namespace evnt
 		/* node event listener
 		* param event the event which caused the function to fire
 		*/
-		virtual void eventFired(Event* event)
+		virtual EventReturnType* eventFired(Event* event)
 		{
-
+			return nullptr;
 		}
 
 		/* returns the class event listener
 		*/
-		std::function<void(Event*)> getEventListener()
+		EventListener getEventListener()
 		{
-			auto eventListener = [=](Event* event) -> void
+			EventListener eventListener = [=](Event* event) -> EventReturnType*
 			{
-				this->eventFired(event);
+				return this->eventFired(event);
 			};
 
 			return eventListener;

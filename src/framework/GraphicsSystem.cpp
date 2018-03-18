@@ -69,7 +69,7 @@ namespace gfx
 	}
 
 
-	void GraphicsSystem::eventFired(Event* evnt)
+	EventReturnType* GraphicsSystem::eventFired(Event* evnt)
 	{
 		if (evnt->getEventType() == evnt::EventType::GRAPHICS)
 		{
@@ -118,6 +118,9 @@ namespace gfx
 			}
 
 		}
+
+		//TODO return actual values
+		return nullptr;
 	}
 
 

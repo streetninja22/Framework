@@ -153,7 +153,7 @@ namespace gfx {
 
 		~GraphicsSystem();
 
-		void eventFired(Event* evnt);
+		EventReturnType* eventFired(Event* evnt);
 
 		/* Causes a graphics update
 		*
