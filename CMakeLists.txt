@@ -14,6 +14,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 set(HEADERS " ")
 set(SOURCES " " )
+set(FRAMEWORK_HEADERS " ")
+set(FRAMEWORK_SOURCES " ")
 
 #file(GLOB HEADERS "${PROJECT_SOURCE_DIR}/src/*.h")
 #file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
@@ -22,9 +24,11 @@ set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src")
 
 add_subdirectory("${SOURCE_DIR}")
 
-add_executable(${PROGRAM_NAME}; ${SOURCES}; ${HEADERS})
+add_executable(${PROGRAM_NAME}; ${FRAMEWORK_SOURCES}; ${FRAMEWORK_HEADERS}; ${SOURCES}; ${HEADERS})
 message(${SOURCES})
 
+source_group("Framework Source Files" FILES ${FRAMEWORK_SOURCES};)
+source_group("Framework Header Files" FILES ${FRAMEWORK_HEADERS};)
 
 #include libraries
 
