@@ -10,16 +10,14 @@ namespace gfx
 	class LoadTextureEvent : public GraphicsEvent
 	{
 		std::string m_filepath;
-		Texture* m_finalTexture;
 		
 	public:
-		LoadTextureEvent(std::string filepath) : m_filepath(filepath), m_finalTexture(new Texture)
+		LoadTextureEvent(std::string filepath) : m_filepath(filepath)
 		{
 			
 		}
 		
 		std::string getFilepath() { return m_filepath; }
-		Texture*& getTexture() { return m_finalTexture; }
 		
 		virtual GraphicsEventType getGraphicsEventType() { return GraphicsEventType::LOAD_TEXTURE; }
 	};
@@ -27,7 +25,7 @@ namespace gfx
 	//An event which calls for the Graphics System to render an image
 	class RenderImageEvent : public RenderEvent
 	{
-		Texture m_texture;
+		Texture* m_texture;
 		Rect* m_srcRect;
 		
 	public:
@@ -42,7 +40,7 @@ namespace gfx
 			* @param srcRect The source rectangle which determines what part of the texture will be rendered
 			* @param dstRect The destination rectangle, which determins where on the screen the texture will be rendered
 			*/
-		RenderImageEvent(Texture texture, Rect* srcRect, Rect* dstRect) : m_texture(texture), m_srcRect(srcRect), RenderEvent(dstRect)
+		RenderImageEvent(Texture* texture, Rect* srcRect, Rect* dstRect) : m_texture(texture), m_srcRect(srcRect), RenderEvent(dstRect)
 		{
 		}
 		
@@ -52,7 +50,7 @@ namespace gfx
 		}
 		
 		Rect* getSrcRect() { return m_srcRect; }
-		Texture getTexture() { return m_texture; }
+		Texture* getTexture() { return m_texture; }
 		virtual GraphicsEventType getGraphicsEventType() override { return GraphicsEventType::RENDER_IMAGE; }
 	};
 
@@ -107,4 +105,22 @@ namespace gfx
 	};
 
 	
+
+
+
+
+	class LoadTextureReturnType : public GraphicsEventReturnType
+	{
+		Texture* m_texture;
+
+	public:
+		LoadTextureReturnType(Texture* texture) : GraphicsEventReturnType(), m_texture(texture)
+		{
+		}
+
+		Texture* getTexture() { return m_texture; }
+
+		virtual GraphicsEventType getGraphicsEventType() { return GraphicsEventType::LOAD_TEXTURE; }
+	};
+
 }

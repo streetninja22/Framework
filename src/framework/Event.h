@@ -117,7 +117,7 @@ namespace evnt
 						addToGarbageList(returned);
 					}
 				}
-				delete m_eventQueue.front(); //this is causing errors, might as well have a dangling pointer for now while testing
+				delete m_eventQueue.front();
 				m_eventQueue.pop();
 			}
 		}
@@ -138,11 +138,8 @@ namespace evnt
 					if (returnValue == nullptr)
 					{
 						returnValue = returned;
-
-						addToGarbageList(returned);
 					}
-					else
-						delete returned;
+					addToGarbageList(returned);
 				}
 			}
 
