@@ -100,17 +100,15 @@ namespace gfx {
 
 		}
 
+
 		virtual EventType getEventType() { return EventType::GRAPHICS; }
 		virtual GraphicsEventType getGraphicsEventType() { return GraphicsEventType::DEFAULT; }
 
 	};
-	
-	//TODO: Move the render events to another file
 
 	//An event which calls for the GraphicsSystem to render an object
 	class RenderEvent : public GraphicsEvent
 	{
-		Rect* m_dstrect;
 
 	public:
 		RenderEvent()
@@ -118,23 +116,24 @@ namespace gfx {
 
 		}
 
-		/* Creates a RenderImageEvent
-		*
-		* @param texture the Texture to render
-		* @param srcRect The source rectangle which determines what part of the texture will be rendered
-		* @param dstRect The destination rectangle, which determins where on the screen the texture will be rendered
-		*/
-		RenderEvent(Rect* dstrect) : m_dstrect(dstrect)
-		{
-		}
-
 		~RenderEvent()
 		{
-			delete m_dstrect;
 		}
 
-		Rect* getDstRect() { return m_dstrect; }
 	};
+
+
+	class GraphicsEventReturnType : public EventReturnType
+	{
+	public:
+		GraphicsEventReturnType() : EventReturnType(EventType::GRAPHICS)
+		{
+		}
+
+		virtual GraphicsEventType getGraphicsEventType() { return GraphicsEventType::DEFAULT; }
+	};
+
+
 
 
 	class GraphicsSystem : public System
@@ -235,7 +234,7 @@ namespace gfx {
 		* @param x The X position of the texture once rendered
 		* @param y The Y position of the texture once rendered
 		*/
-		void renderTexture(Texture texture, Rect* source, Rect* dest);
+		void renderTexture(Texture* texture, Rect* source, Rect* dest);
 	};
 
 }

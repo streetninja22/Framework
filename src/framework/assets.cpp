@@ -1,4 +1,5 @@
 #include "assets.h"
+#include <iostream>
 
 /*
 
@@ -40,7 +41,7 @@ locate the location of the resources folder while in debug schemes.
 
 */
 
-
+#define DEBUG //TODO: Remove this on release
 
 namespace file
 {
@@ -78,10 +79,13 @@ namespace file
 		{
 			path resources = current / "resources";
 			if (exists(resources))
-				return resources.string();
+			{
+				return (resources / subdir).string();
+			}
 
 			current = current.parent_path();
 		}
+		throw MissingFileException();
 	}
 
 	boost::filesystem::path getResourceDirectoryPath(std::string subdir)
@@ -92,24 +96,25 @@ namespace file
 
 		while (current.has_parent_path())
 		{
-			path resources = current / "resources";
+			path resources = current / "resources" / subdir;
 			if (exists(resources))
 				return resources;
 
 			current = current.parent_path();
 		}
+		throw MissingFileException();
 	}
 
 #elif WIN32
 
 	std::string getResourceDirectory(std::string subdir)
 	{
-		return (getCurrentWorkingDirectoryPath() / "resources").string();
+		return (getCurrentWorkingDirectoryPath() / "resources").string() + subdir;
 	}
 
 	boost::filesystem::path getResourceDirectoryPath(std::string subdir)
 	{
-		return getCurrentWorkingDirectoryPath() / "resources";
+		return getCurrentWorkingDirectoryPath() / "resources" + subdir;
 	}
 
 
@@ -127,7 +132,7 @@ namespace file
 
 		if (exists(current))
 		{
-			return current.string();
+			return current.string() + subdir;
 		}
 		throw MissingFileException();
 	}
@@ -144,7 +149,7 @@ namespace file
 
 		if (exists(current))
 		{
-			return current;
+			return current + subdir;
 		}
 		throw MissingFileException();
 	}

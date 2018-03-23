@@ -21,10 +21,11 @@ namespace gfx
 
 	SDL_Rect* SDLRectFromRect(Rect* r2)
 	{
-		SDL_Rect* r1 = new SDL_Rect();
 		if (r2 == NULL)
 			return NULL;
 
+		SDL_Rect* r1 = new SDL_Rect();
+		
 		r1->x = r2->x;
 		r1->y = r2->y;
 		r1->w = r2->w;
@@ -80,28 +81,28 @@ namespace gfx
 			{
 			case GraphicsEventType::RENDER_IMAGE:
 				{
-					RenderImageEvent* graphicsEvent = dynamic_cast<RenderImageEvent*>(evnt);
+					RenderImageEvent* renderEvent = dynamic_cast<RenderImageEvent*>(evnt);
 
-					renderTexture(graphicsEvent->getTexture(), graphicsEvent->getSrcRect(), graphicsEvent->getDstRect());
-					delete graphicsEvent;
-					break;
+					renderTexture(renderEvent->getTexture(), renderEvent->getSrcRect(), renderEvent->getDstRect());
+
+					break; 
 				}
 					
 			case GraphicsEventType::RENDER_DRAW_RECT:
 				{
-					RenderDrawRectEvent* graphicsEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
+					RenderDrawRectEvent* renderEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
 					
-					renderDrawRect(&graphicsEvent->getRect(), graphicsEvent->getColor());
-					delete graphicsEvent;
+					renderDrawRect(&renderEvent->getRect(), renderEvent->getColor());
+					delete renderEvent;
 					break;
 				}
 					
 			case GraphicsEventType::RENDER_FILL_RECT:
 				{
-					RenderDrawRectEvent* graphicsEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
+					RenderDrawRectEvent* renderEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
 					
-					renderFillRect(&graphicsEvent->getRect(), graphicsEvent->getColor());
-					delete graphicsEvent;
+					renderFillRect(&renderEvent->getRect(), renderEvent->getColor());
+					delete renderEvent;
 					break;
 				}
 					
@@ -109,10 +110,9 @@ namespace gfx
 				{
 					LoadTextureEvent* loadEvent = dynamic_cast<LoadTextureEvent*>(evnt);
 					
-					*loadEvent->getTexture() = *loadTexture(loadEvent->getFilepath());
-					
-					delete loadEvent;
-					break;
+					Texture* texture = loadTexture(loadEvent->getFilepath());
+
+					return new LoadTextureReturnType(texture);
 				}
 					
 			}
@@ -260,12 +260,12 @@ namespace gfx
 	}
 
 
-	void GraphicsSystem::renderTexture(Texture texture, Rect* source, Rect* dest)
+	void GraphicsSystem::renderTexture(Texture* texture, Rect* source, Rect* dest)
 	{
 		SDL_Rect* sourceRect = SDLRectFromRect(source);
 		SDL_Rect* destRect = SDLRectFromRect(dest);
 
-		SDL_RenderCopy(m_renderer, texture.getTexture(), sourceRect, destRect);
+		SDL_RenderCopy(m_renderer, texture->getTexture(), sourceRect, destRect);
 		delete sourceRect;
 		delete destRect;
 	}
