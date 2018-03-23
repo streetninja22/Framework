@@ -23,6 +23,11 @@ namespace evnt
 		{
 		}
 
+		virtual ~EventReturnType()
+		{
+
+		}
+
 		EventType getType() { return m_type; }
 
 	};
@@ -97,8 +102,11 @@ namespace evnt
 		{
 			while (!m_returnGarbageList.empty())
 			{
-				delete m_returnGarbageList.back();
-				m_returnGarbageList.pop_back();
+				if (m_returnGarbageList.back() != nullptr)
+				{
+					delete m_returnGarbageList.back();
+					m_returnGarbageList.pop_back();
+				}
 			}
 		}
 
@@ -115,7 +123,7 @@ namespace evnt
 					if (returned != nullptr)
 					{
 						addToGarbageList(returned);
-					}
+					} 
 				}
 				delete m_eventQueue.front();
 				m_eventQueue.pop();
@@ -143,6 +151,7 @@ namespace evnt
 				}
 			}
 
+			delete event;
 			return returnValue;
 		}
 

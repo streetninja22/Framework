@@ -27,6 +27,7 @@ namespace gfx
 	{
 		Texture* m_texture;
 		Rect* m_srcRect;
+		Rect* m_dstRect;
 		
 	public:
 		RenderImageEvent()
@@ -40,16 +41,18 @@ namespace gfx
 			* @param srcRect The source rectangle which determines what part of the texture will be rendered
 			* @param dstRect The destination rectangle, which determins where on the screen the texture will be rendered
 			*/
-		RenderImageEvent(Texture* texture, Rect* srcRect, Rect* dstRect) : m_texture(texture), m_srcRect(srcRect), RenderEvent(dstRect)
+		RenderImageEvent(Texture* texture, Rect* srcRect, Rect* dstRect) : m_texture(texture), m_srcRect(srcRect), m_dstRect(dstRect)
 		{
 		}
 		
-		~RenderImageEvent()
+		virtual ~RenderImageEvent() override
 		{
 			delete m_srcRect;
+			delete m_dstRect;
 		}
 		
 		Rect* getSrcRect() { return m_srcRect; }
+		Rect* getDstRect() { return m_dstRect; }
 		Texture* getTexture() { return m_texture; }
 		virtual GraphicsEventType getGraphicsEventType() override { return GraphicsEventType::RENDER_IMAGE; }
 	};
@@ -70,7 +73,7 @@ namespace gfx
 		{
 		}
 		
-		~RenderDrawRectEvent()
+		virtual ~RenderDrawRectEvent()
 		{
 		}
 		
@@ -95,7 +98,7 @@ namespace gfx
 		{
 		}
 		
-		~RenderFillRectEvent()
+		virtual ~RenderFillRectEvent()
 		{
 		}
 		

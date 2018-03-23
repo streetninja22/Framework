@@ -21,10 +21,11 @@ namespace gfx
 
 	SDL_Rect* SDLRectFromRect(Rect* r2)
 	{
-		SDL_Rect* r1 = new SDL_Rect();
 		if (r2 == NULL)
 			return NULL;
 
+		SDL_Rect* r1 = new SDL_Rect();
+		
 		r1->x = r2->x;
 		r1->y = r2->y;
 		r1->w = r2->w;
@@ -83,7 +84,8 @@ namespace gfx
 					RenderImageEvent* renderEvent = dynamic_cast<RenderImageEvent*>(evnt);
 
 					renderTexture(renderEvent->getTexture(), renderEvent->getSrcRect(), renderEvent->getDstRect());
-					break;
+
+					break; 
 				}
 					
 			case GraphicsEventType::RENDER_DRAW_RECT:
@@ -91,6 +93,7 @@ namespace gfx
 					RenderDrawRectEvent* renderEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
 					
 					renderDrawRect(&renderEvent->getRect(), renderEvent->getColor());
+					delete renderEvent;
 					break;
 				}
 					
@@ -99,6 +102,7 @@ namespace gfx
 					RenderDrawRectEvent* renderEvent = dynamic_cast<RenderDrawRectEvent*>(evnt);
 					
 					renderFillRect(&renderEvent->getRect(), renderEvent->getColor());
+					delete renderEvent;
 					break;
 				}
 					

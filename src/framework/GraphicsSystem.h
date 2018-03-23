@@ -100,6 +100,7 @@ namespace gfx {
 
 		}
 
+
 		virtual EventType getEventType() { return EventType::GRAPHICS; }
 		virtual GraphicsEventType getGraphicsEventType() { return GraphicsEventType::DEFAULT; }
 
@@ -108,7 +109,6 @@ namespace gfx {
 	//An event which calls for the GraphicsSystem to render an object
 	class RenderEvent : public GraphicsEvent
 	{
-		Rect* m_dstrect;
 
 	public:
 		RenderEvent()
@@ -116,22 +116,10 @@ namespace gfx {
 
 		}
 
-		/* Creates a RenderImageEvent
-		*
-		* @param texture the Texture to render
-		* @param srcRect The source rectangle which determines what part of the texture will be rendered
-		* @param dstRect The destination rectangle, which determins where on the screen the texture will be rendered
-		*/
-		RenderEvent(Rect* dstrect) : m_dstrect(dstrect)
-		{
-		}
-
 		~RenderEvent()
 		{
-			delete m_dstrect;
 		}
 
-		Rect* getDstRect() { return m_dstrect; }
 	};
 
 

@@ -10,8 +10,6 @@
 
 int main(int argc, char** argv)
 {
-	SDL_Window* window = SDL_CreateWindow("test", 0, 0, 640, 640, SDL_WINDOW_SHOWN);
-
 	evnt::EventBus* bus = new evnt::EventBus();
 	
 	inpt::InputSystem input(bus);
