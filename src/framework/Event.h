@@ -11,6 +11,7 @@ namespace evnt
 		DEFAULT,
 		GRAPHICS,
 		INPUT,
+		SOUND,
 	};
 
 

@@ -39,17 +39,20 @@ set(Boost_USE_MULTITHREADED_ON)
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
 include_directories(${SDL_INCLUDE_DIR})
 include_directories(${SD2_IMAGE_INCLUDE_DIR})
+include_directories(${SDL2_MIXER_INCLUDE_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 
 link_directories(${SDL2_LIBRARY_DIR})
 link_directories(${SDL2_IMAGE_LIBRARY_DIR})
+link_directories(${SDL_MIXER_LIBRARY_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
-target_link_libraries(${PROGRAM_NAME} ${Boost_LIBRARIES}; ${SDL2_LIBRARY}; ${SDL2_IMAGE_LIBRARY})
+target_link_libraries(${PROGRAM_NAME} ${Boost_LIBRARIES}; ${SDL2_LIBRARY}; ${SDL2_IMAGE_LIBRARY}; ${SDL2_MIXER_LIBRARY})
 
 
 #preprocessor macros

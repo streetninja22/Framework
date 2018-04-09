@@ -118,8 +118,6 @@ namespace gfx
 			}
 
 		}
-
-		//TODO return actual values
 		return nullptr;
 	}
 
