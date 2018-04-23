@@ -76,10 +76,27 @@ int main(int argc, char** argv)
 	gfx::GraphicsSystem graphics(bus, "Test", 0, 80, 640, 480);
 	
 	sound::SoundSystem sound(bus);
+	
+	
+	
 
 	evnt::EventReturnType* returned = bus->fireEventNow(new gfx::LoadTextureEvent(file::getResourceDirectory("gfx/cryofreeze.jpg")));
 
 	gfx::Texture* texture = static_cast<gfx::LoadTextureReturnType*>(returned)->getTexture();
+	
+	
+	
+	evnt::EventReturnType* fontReturn = bus->fireEventNow(new gfx::LoadFontEvent(file::getResourceDirectory("fonts/Roboto-Regular.ttf"), 28));
+	
+	gfx::Font* font = static_cast<gfx::LoadFontReturnType*>(fontReturn)->getFont();
+	
+	
+	
+	evnt::EventReturnType* textReturn = bus->fireEventNow(new gfx::LoadTextEvent("Hello, World!", font, {0, 0, 0, 255}));
+	
+	gfx::Texture* text = static_cast<gfx::LoadTextureReturnType*>(textReturn)->getTexture();
+	
+	
 	
 	GameSystem gameSystem(bus);
 	
@@ -99,6 +116,7 @@ int main(int argc, char** argv)
 		gfx::RenderImageEvent* event = new gfx::RenderImageEvent(texture, NULL, NULL);
 
 		bus->addEvent(event);
+		bus->addEvent(new gfx::RenderImageEvent(text, NULL, new gfx::Rect{0, 100, 480, 280}));
 		
 	}
 	
