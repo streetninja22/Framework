@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 		
 		graphics.update();
 
-		gfx::RenderImageEvent* event = new gfx::RenderImageEvent(texture, NULL, NULL);
+		gfx::RenderRotateImageEvent* event = new gfx::RenderRotateImageEvent(texture, NULL, NULL, 0, NULL, gfx::FLIP_VERTICAL);
 
 		bus->addEvent(event);
 		bus->addEvent(new gfx::RenderImageEvent(text, NULL, new gfx::Rect{0, 100, 480, 280}));
