@@ -107,6 +107,7 @@ int main(int argc, char** argv)
 	
 	while (true)
 	{
+		//This testing rig gets slowly more and more insane as time goes on
 		bus->update();
 		
 		input.updateInput();
@@ -115,6 +116,7 @@ int main(int argc, char** argv)
 
 		gfx::RenderRotateImageEvent* event = new gfx::RenderRotateImageEvent(texture, NULL, NULL, 0, NULL, gfx::FLIP_VERTICAL);
 
+		bus->addEvent(new gfx::SetViewportEvent(new gfx::Rect {240, 240, 240, 240}));
 		bus->addEvent(event);
 		bus->addEvent(new gfx::RenderImageEvent(text, NULL, new gfx::Rect{0, 100, 480, 280}));
 		
